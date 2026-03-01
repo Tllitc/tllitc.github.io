@@ -1,1 +1,714 @@
-<h1>Tllitc</h1>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历解析工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .upload-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .upload-section:hover {
+            border-color: #4CAF50;
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .custom-file-upload:hover {
+            background-color: #45a049;
+        }
+        
+        #file-name {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        #upload-btn {
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        #upload-btn:hover {
+            background-color: #007B9E;
+        }
+        
+        #upload-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .progress-section {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        #progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        
+        .result-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+        }
+        
+        .result-item h3 {
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 16px;
+        }
+        
+        .result-content {
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .skills-list {
+            list-style-type: none;
+        }
+        
+        .skills-list li {
+            display: inline-block;
+            background-color: #e0f7fa;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        
+        .error-message {
+            color: #f44336;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .job-requirement-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .job-requirement-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        #submit-job-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        
+        #submit-job-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .job-result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        
+        .job-result-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .match-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        
+        .match-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        #match-btn {
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        #match-btn:hover {
+            background-color: #e68a00;
+        }
+        
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+        
+        .score-details {
+            margin-top: 20px;
+        }
+        
+        .score-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .score-item h4 {
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>简历解析工具</h1>
+        
+        <div class="job-requirement-section">
+            <h2>招聘岗位需求描述</h2>
+            
+            <div class="form-group">
+                <label for="job-description">岗位描述：</label>
+                <textarea id="job-description" placeholder="请输入岗位描述..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="education-requirement">学历要求：</label>
+                <input type="text" id="education-requirement" placeholder="例如：本科及以上">
+            </div>
+            
+            <div class="form-group">
+                <label for="experience-requirement">工作年限要求：</label>
+                <input type="text" id="experience-requirement" placeholder="例如：3年以上">
+            </div>
+            
+            <div class="form-group">
+                <label for="skills-requirement">技能要求：</label>
+                <textarea id="skills-requirement" placeholder="请输入技能要求，多个技能用逗号分隔..."></textarea>
+            </div>
+            
+            <button id="submit-job-btn">提交岗位需求</button>
+            
+            <div class="error-message" id="job-error-message"></div>
+        </div>
+        
+        <div class="job-result-section" id="job-result-section">
+            <h2>岗位需求提交结果</h2>
+            
+            <div class="result-item">
+                <h3>返回结果</h3>
+                <div class="result-content" id="job-json-result"></div>
+            </div>
+        </div>
+        
+        <div class="upload-section">
+            <input type="file" id="file-input" accept=".pdf">
+            <label for="file-input" class="custom-file-upload">选择PDF简历</label>
+            <div id="file-name">未选择文件</div>
+            <button id="upload-btn" disabled>上传并解析</button>
+            
+            <div class="progress-section" id="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div id="progress-text">上传中...</div>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+        </div>
+        
+        <div class="result-section" id="result-section">
+            <h2>解析结果</h2>
+            
+            <div class="result-item">
+                <h3>原始JSON数据</h3>
+                <div class="result-content" id="json-result"></div>
+            </div>
+            
+            <button id="match-btn">匹配岗位需求</button>
+        </div>
+        
+        <div class="match-section" id="match-section">
+            <h2>匹配结果</h2>
+            
+            <div class="score-display" id="total-score">0分</div>
+            
+            <div class="score-details">
+                <div class="score-item">
+                    <h4>学历匹配度</h4>
+                    <div id="education-score">0%</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="education-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="score-item">
+                    <h4>工作经验匹配度</h4>
+                    <div id="experience-score">0%</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="experience-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="score-item">
+                    <h4>技能匹配度</h4>
+                    <div id="skills-score">0%</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="skills-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-item" style="margin-top: 20px;">
+                <h3>详细匹配结果</h3>
+                <div class="result-content" id="match-json-result"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('file-input');
+            const fileName = document.getElementById('file-name');
+            const uploadBtn = document.getElementById('upload-btn');
+            const progressSection = document.getElementById('progress-section');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const resultSection = document.getElementById('result-section');
+            const errorMessage = document.getElementById('error-message');
+            
+            // 监听文件选择
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    fileName.textContent = e.target.files[0].name;
+                    uploadBtn.disabled = false;
+                    errorMessage.textContent = '';
+                } else {
+                    fileName.textContent = '未选择文件';
+                    uploadBtn.disabled = true;
+                }
+            });
+            
+            // 监听上传按钮点击
+            uploadBtn.addEventListener('click', function() {
+                const file = fileInput.files[0];
+                if (!file) return;
+                
+                // 显示进度条
+                progressSection.style.display = 'block';
+                resultSection.style.display = 'none';
+                errorMessage.textContent = '';
+                
+                // 创建FormData对象
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // 创建XMLHttpRequest对象
+                const xhr = new XMLHttpRequest();
+                
+                // 监听上传进度
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        progressFill.style.width = percentComplete + '%';
+                        progressText.textContent = `上传中... ${Math.round(percentComplete)}%`;
+                    }
+                });
+                
+                // 监听请求完成
+                xhr.addEventListener('load', function() {
+                    progressSection.style.display = 'none';
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            const result = JSON.parse(xhr.responseText);
+                            displayResult(result);
+                        } catch (e) {
+                            errorMessage.textContent = '解析结果失败，请重试';
+                        }
+                    } else {
+                        try {
+                            const error = JSON.parse(xhr.responseText);
+                            errorMessage.textContent = error.error || '上传失败，请重试';
+                        } catch (e) {
+                            errorMessage.textContent = '上传失败，请重试';
+                        }
+                    }
+                });
+                
+                // 监听网络错误
+                xhr.addEventListener('error', function() {
+                    progressSection.style.display = 'none';
+                    errorMessage.textContent = '网络错误，请重试';
+                });
+                
+                // 发送请求
+                xhr.open('POST', 'http://flask.web-framework-qw7g.1842898315239479.cn-hangzhou.fc.devsapp.net/upload_resume');
+                xhr.send(formData);
+            });
+            
+            // 显示解析结果
+            function displayResult(result) {
+                resultSection.style.display = 'block';
+                
+                // 显示原始JSON数据
+                const jsonResult = document.getElementById('json-result');
+                jsonResult.innerHTML = '';
+                
+                // 创建一个pre标签来展示格式化的JSON
+                const pre = document.createElement('pre');
+                pre.style.whiteSpace = 'pre-wrap';
+                pre.style.fontFamily = 'monospace';
+                pre.style.fontSize = '14px';
+                pre.style.lineHeight = '1.5';
+                pre.textContent = JSON.stringify(result, null, 2);
+                
+                jsonResult.appendChild(pre);
+            }
+            
+            // 处理岗位需求提交
+            const submitJobBtn = document.getElementById('submit-job-btn');
+            const jobErrorMessage = document.getElementById('job-error-message');
+            const jobResultSection = document.getElementById('job-result-section');
+            
+            submitJobBtn.addEventListener('click', function() {
+                const description = document.getElementById('job-description').value.trim();
+                const education = document.getElementById('education-requirement').value.trim();
+                const experience = document.getElementById('experience-requirement').value.trim();
+                const skills = document.getElementById('skills-requirement').value.trim();
+                
+                // 验证输入
+                if (!description || !education || !experience || !skills) {
+                    jobErrorMessage.textContent = '请填写所有字段';
+                    return;
+                }
+                
+                jobErrorMessage.textContent = '';
+                
+                // 构造请求数据
+                const jobData = {
+                    description: description,
+                    education: education,
+                    experience: experience,
+                    skills: skills
+                };
+                
+                // 创建XMLHttpRequest对象
+                const xhr = new XMLHttpRequest();
+                
+                // 监听请求完成
+                xhr.addEventListener('load', function() {
+                    if (xhr.status === 200) {
+                        try {
+                            const result = JSON.parse(xhr.responseText);
+                            displayJobResult(result);
+                        } catch (e) {
+                            jobErrorMessage.textContent = '解析结果失败，请重试';
+                        }
+                    } else {
+                        try {
+                            const error = JSON.parse(xhr.responseText);
+                            jobErrorMessage.textContent = error.error || '提交失败，请重试';
+                        } catch (e) {
+                            jobErrorMessage.textContent = '提交失败，请重试';
+                        }
+                    }
+                });
+                
+                // 监听网络错误
+                xhr.addEventListener('error', function() {
+                    jobErrorMessage.textContent = '网络错误，请重试';
+                });
+                
+                // 发送请求
+                xhr.open('POST', 'http://flask.web-framework-qw7g.1842898315239479.cn-hangzhou.fc.devsapp.net/job_requirement');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify(jobData));
+            });
+            
+            // 显示岗位需求提交结果
+            function displayJobResult(result) {
+                jobResultSection.style.display = 'block';
+                
+                const jobJsonResult = document.getElementById('job-json-result');
+                jobJsonResult.innerHTML = '';
+                
+                const pre = document.createElement('pre');
+                pre.style.whiteSpace = 'pre-wrap';
+                pre.style.fontFamily = 'monospace';
+                pre.style.fontSize = '14px';
+                pre.style.lineHeight = '1.5';
+                pre.textContent = JSON.stringify(result, null, 2);
+                
+                jobJsonResult.appendChild(pre);
+            }
+            
+            // 存储简历数据和岗位需求数据
+            let resumeData = null;
+            let jobRequirementData = null;
+            
+            // 重写displayResult函数，保存简历数据
+            const originalDisplayResult = displayResult;
+            displayResult = function(result) {
+                resumeData = result;
+                originalDisplayResult(result);
+            };
+            
+            // 重写displayJobResult函数，保存岗位需求数据
+            const originalDisplayJobResult = displayJobResult;
+            displayJobResult = function(result) {
+                jobRequirementData = result;
+                originalDisplayJobResult(result);
+            };
+            
+            // 处理匹配按钮点击
+            const matchBtn = document.getElementById('match-btn');
+            const matchSection = document.getElementById('match-section');
+            
+            matchBtn.addEventListener('click', function() {
+                if (!resumeData) {
+                    errorMessage.textContent = '请先上传并解析简历';
+                    return;
+                }
+                
+                if (!jobRequirementData) {
+                    jobErrorMessage.textContent = '请先提交岗位需求';
+                    return;
+                }
+                
+                // 构造匹配请求数据
+                const matchData = {
+                    resume: resumeData,
+                    job_requirement: {
+                        description: jobRequirementData.description,
+                        education: jobRequirementData.education,
+                        experience: jobRequirementData.experience,
+                        skills: jobRequirementData.skills
+                    }
+                };
+                
+                // 创建XMLHttpRequest对象
+                const xhr = new XMLHttpRequest();
+                
+                // 监听请求完成
+                xhr.addEventListener('load', function() {
+                    if (xhr.status === 200) {
+                        try {
+                            const result = JSON.parse(xhr.responseText);
+                            displayMatchResult(result);
+                        } catch (e) {
+                            errorMessage.textContent = '匹配结果解析失败，请重试';
+                        }
+                    } else {
+                        try {
+                            const error = JSON.parse(xhr.responseText);
+                            errorMessage.textContent = error.error || '匹配失败，请重试';
+                        } catch (e) {
+                            errorMessage.textContent = '匹配失败，请重试';
+                        }
+                    }
+                });
+                
+                // 监听网络错误
+                xhr.addEventListener('error', function() {
+                    errorMessage.textContent = '网络错误，请重试';
+                });
+                
+                // 发送请求
+                xhr.open('POST', 'http://flask.web-framework-qw7g.1842898315239479.cn-hangzhou.fc.devsapp.net/match_resume');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify(matchData));
+            });
+            
+            // 显示匹配结果
+            function displayMatchResult(result) {
+                matchSection.style.display = 'block';
+                
+                // 显示总分
+                const totalScore = document.getElementById('total-score');
+                totalScore.textContent = result.total_score + '分';
+                
+                // 显示学历匹配度
+                const educationScore = result.match_details.education_match;
+                document.getElementById('education-score').textContent = educationScore + '%';
+                document.getElementById('education-bar').style.width = educationScore + '%';
+                
+                // 显示工作经验匹配度
+                const experienceScore = result.match_details.experience_match;
+                document.getElementById('experience-score').textContent = experienceScore + '%';
+                document.getElementById('experience-bar').style.width = experienceScore + '%';
+                
+                // 显示技能匹配度
+                const skillsScore = result.match_details.skills_match;
+                document.getElementById('skills-score').textContent = skillsScore + '%';
+                document.getElementById('skills-bar').style.width = skillsScore + '%';
+                
+                // 显示详细匹配结果
+                const matchJsonResult = document.getElementById('match-json-result');
+                matchJsonResult.innerHTML = '';
+                
+                const pre = document.createElement('pre');
+                pre.style.whiteSpace = 'pre-wrap';
+                pre.style.fontFamily = 'monospace';
+                pre.style.fontSize = '14px';
+                pre.style.lineHeight = '1.5';
+                pre.textContent = JSON.stringify(result, null, 2);
+                
+                matchJsonResult.appendChild(pre);
+            }
+        });
+    </script>
+</body>
+</html>
